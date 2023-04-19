@@ -1,3 +1,9 @@
+variable "zone" {
+  description = "Zona de servidores que ficará provisionada a infraestrutura"
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "vpc_cidr" {
   description = "IPv4 para a VPC"
   type        = string
@@ -28,6 +34,12 @@ variable "redshift_subnet_cidr_second" {
   default     = "10.0.2.0/24"
 }
 
+variable "redshift_subnet_cidr_third" {
+  description = "IPv4 para a segunda subnet"
+  type        = string
+  default     = "10.0.3.0/24"
+}
+
 variable "rs_cluster_identifier" {
   description = "Nome do cluster Redshift"
   type        = string
@@ -46,14 +58,8 @@ variable "rs_master_username" {
   default     = "redshift_user"
 }
 
-variable "rs_nodetype" {
-  description = "Tipo do nó do cluster"
+variable "rs_master_password" {
+  description = "Senha do banco de dados"
   type        = string
-  default     = "dc2.large"
-}
-
-variable "rs_cluster_type" {
-  description = "Tipo do cluster"
-  type        = string
-  default     = "single-node"
+  default     = "SenhaTeste1!"
 }
