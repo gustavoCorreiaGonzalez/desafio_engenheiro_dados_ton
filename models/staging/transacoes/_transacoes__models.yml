@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_transacoes__usuarios
+    description: teste
+    columns:
+      - name: id_codigo_transacao
+        description: Código único da transação
+
+      - name: dt_transacao
+        description: Data e hora da transação (UTC 0)
+
+      - name: nm_metodo_captura
+        description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
+
+      - name: nm_bandeira_cartao
+        description: Bandeira do cartão
+
+      - name: nm_metodo_pagamento
+        description: Método de pagamento
+
+      - name: nm_estado_transacao
+        description: Estado da transação (paid, refused, refunded e chargedback)
+
+      - name: nm_valor_transacao
+        description: Valor da transação (R$)
+
+      - name: id_codigo_usuario
+        description: Código único do usuário
+
+      - name: nm_estado_usuario
+        description: Estado do usuário
+
+      - name: nm_cidade_usuario
+        description: Cidade do usuário
