@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: int_totalizacoes_usuario
+    description: >
+      Modelo que realiza as totalizações dos valores gastos e a utilização das formas de pagamento
+    columns:
+      - name: id_codigo_usuario
+        description: Código único do usuário
+
+      - name: nm_metodo_captura
+        description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
+
+      - name: nm_bandeira_cartao
+        description: Bandeira do cartão
+
+      - name: nm_metodo_pagamento
+        description: Método de pagamento
+
+      - name: n_utilizacoes_cartao
+        description: Quantidade de vezes que o cartão foi usado
+
+      - name: n_utilizacoes_credito
+        description: Quantidade de vezes que foi utilizado a função crédito
+
+      - name: n_total_aprovado
+        description: Valor total aprovado
+
+      - name: n_total_estornado
+        description: Valor total estornado
+
+      - name: n_total_devolvido
+        description: Valor total devolvido
+
+      - name: n_total_processando
+        description: Valor total proceesado
+
+      - name: n_total_pago
+        description: Valor total pago

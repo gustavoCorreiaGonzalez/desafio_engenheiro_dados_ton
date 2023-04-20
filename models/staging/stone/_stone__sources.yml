@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: dev
+    database: dev
+    schema: public
+    tables:
+      - name: raw_transacoes_usuarios
+        description: "{{ doc('description_raw_transacoes_usuarios') }}"
+        columns:
+          - name: codigo_da_transacao
+            description: Código único da transação
+
+          - name: data_e_hora_da_transacao
+            description: Data e hora da transação (UTC 0)
+
+          - name: metodo_de_captura
+            description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
+
+          - name: bandeira_do_cartao
+            description: Bandeira do cartão
+
+          - name: metodo_de_pagamento
+            description: Método de pagamento
+
+          - name: estado_da_transacao
+            description: Estado da transação (paid, refused, refunded e chargedback)
+
+          - name: valor_da_transacao
+            description: Valor da transação (R$)
+
+          - name: codigo_do_usuario
+            description: Código único do usuário
+
+          - name: estado_do_usuario
+            description: Estado do usuário
+
+          - name: cidade_do_usuario
+            description: Cidade do usuário

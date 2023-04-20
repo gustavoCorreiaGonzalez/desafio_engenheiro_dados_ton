@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.zone
 }
 
 resource "aws_vpc" "this" {
@@ -45,7 +45,7 @@ resource "aws_subnet" "first" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = var.redshift_subnet_cidr_first
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a"
+  availability_zone       = "${var.zone}a"
 
   tags = {
     Name        = "${var.prefix}-subnet-1"
@@ -59,7 +59,7 @@ resource "aws_subnet" "second" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = var.redshift_subnet_cidr_second
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1b"
+  availability_zone       = "${var.zone}b"
 
   tags = {
     Name        = "${var.prefix}-subnet-2"
@@ -69,11 +69,27 @@ resource "aws_subnet" "second" {
   depends_on = [aws_vpc.this]
 }
 
+resource "aws_subnet" "third" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.redshift_subnet_cidr_third
+  map_public_ip_on_launch = true
+  availability_zone       = "${var.zone}c"
+
+  tags = {
+    Name        = "${var.prefix}-subnet-3"
+    Environment = "Dev"
+  }
+
+  depends_on = [aws_vpc.this]
+}
+
+
 resource "aws_redshift_subnet_group" "this" {
   name = "${var.prefix}-subnet-group"
   subnet_ids = [
     "${aws_subnet.first.id}",
-    "${aws_subnet.second.id}"
+    "${aws_subnet.second.id}",
+    "${aws_subnet.third.id}"
   ]
 
   tags = {
@@ -129,54 +145,32 @@ resource "aws_s3_bucket" "this" {
   }
 }
 
-resource "random_password" "this" {
-  length           = 16
-  special          = true
-  override_special = "!$%&*()-_=+[]{}<>:?"
-}
-
-resource "random_string" "unique_suffix" {
-  length  = 6
-  special = false
-}
-
-resource "aws_redshift_cluster" "this" {
-  cluster_identifier        = var.rs_cluster_identifier
-  database_name             = var.rs_database_name
-  master_username           = var.rs_master_username
-  master_password           = random_password.this.result
-  node_type                 = var.rs_nodetype
-  cluster_type              = var.rs_cluster_type
-  cluster_subnet_group_name = aws_redshift_subnet_group.this.id
-  skip_final_snapshot       = true
-  iam_roles                 = ["${aws_iam_role.redshift_role.arn}"]
+resource "aws_redshiftserverless_namespace" "this" {
+  namespace_name      = "dbt"
+  admin_username      = var.rs_master_username
+  admin_user_password = var.rs_master_password
+  db_name             = var.rs_database_name
+  iam_roles           = ["${aws_iam_role.redshift_role.arn}"]
 
   tags = {
-    Name        = "${var.prefix}-redshift-cluster"
+    Name        = "${var.prefix}-redshift-namespace"
     Environment = "Dev"
   }
+}
 
-  depends_on = [
-    aws_vpc.this,
-    aws_security_group.this,
-    aws_redshift_subnet_group.this,
-    aws_iam_role.redshift_role,
+resource "aws_redshiftserverless_workgroup" "this" {
+  namespace_name       = aws_redshiftserverless_namespace.this.namespace_name
+  workgroup_name       = "desafio-ton"
+  enhanced_vpc_routing = true
+  security_group_ids   = ["${aws_security_group.this.id}"]
+  subnet_ids = [
+    "${aws_subnet.first.id}",
+    "${aws_subnet.second.id}",
+    "${aws_subnet.third.id}"
   ]
-}
 
-resource "aws_secretsmanager_secret" "redshift_connection" {
-  description = "Conexão com o Redshift"
-  name        = "redshift_secret_${random_string.unique_suffix.result}"
-}
-
-resource "aws_secretsmanager_secret_version" "this" {
-  secret_id = aws_secretsmanager_secret.redshift_connection.id
-  secret_string = jsonencode({
-    username            = aws_redshift_cluster.this.master_username
-    password            = aws_redshift_cluster.this.master_password
-    engine              = "redshift"
-    host                = aws_redshift_cluster.this.endpoint
-    port                = tostring(var.redshift_port)
-    dbClusterIdentifier = aws_redshift_cluster.this.cluster_identifier
-  })
+  tags = {
+    Name        = "${var.prefix}-redshift-workgroup"
+    Environment = "Dev"
+  }
 }
