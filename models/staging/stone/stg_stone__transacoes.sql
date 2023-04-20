@@ -1,4 +1,4 @@
--- stg_source__transacoes.sql
+-- stg_stone__transacoes.sql
 
 WITH source AS (
     SELECT * FROM {{ source('dev','raw_transacoes_usuarios') }}
