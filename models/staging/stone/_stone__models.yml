@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_source__transacoes
+  - name: stg_stone__transacoes
     description: teste
     columns:
       - name: id_codigo_transacao
