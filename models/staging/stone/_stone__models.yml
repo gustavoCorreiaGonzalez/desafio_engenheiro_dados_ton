@@ -4,13 +4,19 @@ models:
   - name: stg_stone__transacoes
     description: teste
     columns:
+      - name: id_surrogate_key
+        description: Código único gerado pelas colunas id_codigo_transacao e id_codigo_usuario
+        tests:
+          - unique
+          - not_null
+
       - name: id_codigo_transacao
         description: Código único da transação
         tests:
           - not_null
 
-      - name: dt_transacao
-        description: Data e hora da transação (UTC 0)
+      - name: id_codigo_usuario
+        description: Código único do usuário
         tests:
           - not_null
 
@@ -41,16 +47,6 @@ models:
               values:
                 ["refused", "chargedback", "refunded", "processing", "paid"]
 
-      - name: nm_valor_transacao
-        description: Valor da transação (R$)
-        tests:
-          - not_null
-
-      - name: id_codigo_usuario
-        description: Código único do usuário
-        tests:
-          - not_null
-
       - name: nm_estado_usuario
         description: Estado do usuário
         tests:
@@ -58,5 +54,15 @@ models:
 
       - name: nm_cidade_usuario
         description: Cidade do usuário
+        tests:
+          - not_null
+
+      - name: nm_valor_transacao
+        description: Valor da transação (R$)
+        tests:
+          - not_null
+
+      - name: dt_transacao
+        description: Data e hora da transação (UTC 0)
         tests:
           - not_null

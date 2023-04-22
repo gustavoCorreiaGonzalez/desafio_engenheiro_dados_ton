@@ -7,6 +7,7 @@ WITH source AS (
 transacoes AS (
     SELECT
         -- ids
+        {{ dbt_utils.generate_surrogate_key(['codigo_da_transacao', 'codigo_do_usuario', 'data_e_hora_da_transacao']) }} AS id_surrogate_key, -- noqa: LT01, LT05
         codigo_da_transacao AS id_codigo_transacao,
         codigo_do_usuario AS id_codigo_usuario,
         -- strings
