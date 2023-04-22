@@ -22,7 +22,7 @@ transacoes AS (
         cartoes c
     INNER JOIN
         usuarios u
-    ON c.id_codigo_usuario = u.id_codigo_usuario
+    ON c.id_surrogate_key = u.id_surrogate_key
 )
 
 SELECT * FROM transacoes

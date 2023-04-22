@@ -4,6 +4,12 @@ models:
   - name: dim_cartoes
     description: Dimensão de usuários
     columns:
+      - name: id_surrogate_key
+        description: Código único gerado pelas colunas id_codigo_transacao e id_codigo_usuario
+        tests:
+          - unique
+          - not_null
+
       - name: id_codigo_usuario
         description: Código único do usuário
 
@@ -31,7 +37,7 @@ models:
     description: Dimensão de usuários
     columns:
       - name: id_surrogate_key
-        description: Código surrogate_key
+        description: Código único gerado pelas colunas id_codigo_transacao e id_codigo_usuario
         tests:
           - unique
           - not_null
