@@ -7,6 +7,7 @@ WITH transacoes AS (
 cartoes AS (
     SELECT 
         -- id
+        id_surrogate_key,
         id_codigo_usuario,
         -- string
         nm_metodo_captura,
