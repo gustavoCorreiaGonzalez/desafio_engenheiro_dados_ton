@@ -1,4 +1,4 @@
--- dim_usuarios.sql
+-- marts/transacao/dim_usuarios.sql
 
 WITH transacoes AS (
     SELECT * FROM {{ ref('stg_stone__transacoes') }}

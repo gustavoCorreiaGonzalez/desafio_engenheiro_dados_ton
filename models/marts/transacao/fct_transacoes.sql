@@ -1,4 +1,4 @@
--- fct_transacoes.sql
+-- marts/transacao/fct_transacoes.sql
 
 WITH cartoes AS (
     SELECT * FROM {{ ref('dim_cartoes') }}
