@@ -2,19 +2,17 @@
 
 Desafio para a vaga de Engenheiro de Dados/Analytics da Ton
 
-## Github
+## Terraform
 
-<https://github.com/gustavoCorreiaGonzalez/desafio_engenheiro_dados_ton/>
+Para realizar a criação da infraestrutura na AWS, foi desenvolvido um script em Terraform para automatizar e ter o controle das versões da infraestrutura escolhida. Foi considerado a utilização de boas práticas descritas nesse [site][1] que foi criado pelo Anton Babenko que é um dos principais contribuidores do Terraform para a plataforma da AWS.
 
-## Arquitetura
+## AWS Redshift
 
-### Terraform
+Utilizei o AWS Redshift Serverless para o projeto, fiz o upload da base que estava upada em um S3 utilizando o comando COPY para a tabela raw_transacoes_usuarios e assim inserindo todos os dados.
 
-Para realizar a criação da infraestrutura na AWS, foi desenvolvido um script em Terraform para automatizar e ter o controle das versões da infraestrutura escolhida. Foi levado em consideração a utilização de boas práticas descritas nesse [site][1] que foi criado pelo Anton Babenko que é um dos principais contribuídores do Terraform para a plataforma da AWS.
+Para fazer o cálculo do Churn, para melhorar o desempenho do script, usei as funções LAG e LEAD que retorna os valores para uma linha em um determinado deslocamento acima e a abaixo da linha atual na partição respectivamente. Com esses retornos, foi possível ver se o usuário tinha realizado uma compra no mês anterior e posterior, assim o cálculo do Churn ficou muito mais fácil.
 
-### AWS Redshift
-
-### DBT
+## DBT
 
 Para a criação do projeto do DBT, segui as boas práticas descritas na própria [documentação][2] do DBT para ter uma melhor organização das pastas e para seguir a convenção que os próprios desenvolvedores do DBT seguem [internamente][3].
 
@@ -29,15 +27,17 @@ Resumindo, é a utilização de alguns prefixos antes do nome da coluna para apr
 | dt_     | Data de algum evento                             |
 | nm_     | Descrição de algo                                |
 
-#### Modelagem
+### Modelagem
 
 Utilizei como sugerido no desafio a star schema que está descrita na [documentação][6] do DBT.
 
-- falar das dim e fct
+Criei algumas dimensões e tabelas fatos referente à base de dados, minha ideia foi separar as informações dos usuários e das transações, assim criei a dimensões de usuários e cartões para que na tabela fato fizesse a junção dessas informações.
 
-#### Testes
+As outras tabelas fato foram criadas para representar algumas métricas de negócio, como o Churn, TPV e Ticket Médio. Assim será possível criar gráficos que mostrarão por mês como estão essas métricas.
 
-Quando trabalhei com o DBT, segui uma linha de criação de testes seguindo esse [tutorial][7]. Algumas coisas foram adaptadas para o escopo do projeto e também é necessário cuidado na utilização dos testes para não gastar muitos recursos na Cloud. A princípio para esse desafio utilizei os testes nativos do DBT e também alguns testes do pacote dbt-utils, mas também já desenvolvi testes personalizados e também utilizei o pacote dbt-great-expectations para algums testes mais elaborados.
+### Testes
+
+Quando trabalhei com o DBT, segui uma linha de criação de testes seguindo esse [tutorial][7]. Algumas coisas foram adaptadas para o escopo do projeto e também é necessário cuidado na utilização dos testes para não gastar muitos recursos na Cloud. A princípio para esse desafio utilizei os testes nativos do DBT e também alguns testes do pacote dbt-utils, mas também já desenvolvi testes personalizados e também utilizei o pacote dbt-great-expectations para alguns testes mais elaborados.
 
 [1]: https://www.terraform-best-practices.com/code-styling
 [2]: https://docs.getdbt.com/guides/best-practices/how-we-structure/1-guide-overview
