@@ -13,7 +13,9 @@ cartoes AS (
         nm_metodo_captura,
         nm_bandeira_cartao,
         nm_metodo_pagamento,
-        nm_estado_transacao
+        nm_estado_transacao,
+        -- value
+        nm_valor_transacao
     FROM transacoes
 )
 

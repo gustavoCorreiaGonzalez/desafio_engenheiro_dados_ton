@@ -1,39 +1,25 @@
 version: 2
 
 models:
-  - name: int_totalizacoes_usuario
+  - name: int_transacoes_usuario
     description: >
-      Modelo que realiza as totalizações dos valores gastos e a utilização das formas de pagamento
+      Modelo que realiza filtra as transações que estão com o status do pagamento como 'paid'
     columns:
       - name: id_codigo_usuario
         description: Código único do usuário
 
-      - name: nm_metodo_captura
-        description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
-
-      - name: nm_bandeira_cartao
-        description: Bandeira do cartão
+      - name: nm_estado_transacao
+        description: Estado da transação (paid, refused, refunded e chargedback)
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "= paid"
 
       - name: nm_metodo_pagamento
         description: Método de pagamento
 
-      - name: n_utilizacoes_cartao
-        description: Quantidade de vezes que o cartão foi usado
+      - name: nm_valor_transacao
+        description: Valor da transação
 
-      - name: n_utilizacoes_credito
-        description: Quantidade de vezes que foi utilizado a função crédito
-
-      - name: n_total_aprovado
-        description: Valor total aprovado
-
-      - name: n_total_estornado
-        description: Valor total estornado
-
-      - name: n_total_devolvido
-        description: Valor total devolvido
-
-      - name: n_total_processando
-        description: Valor total proceesado
-
-      - name: n_total_pago
-        description: Valor total pago
+      - name: dt_transacao
+        description: Data da transação
