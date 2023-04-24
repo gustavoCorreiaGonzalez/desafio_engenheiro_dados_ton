@@ -15,6 +15,7 @@ usuarios AS (
     FROM
         transacoes
     GROUP BY
+        id_surrogate_key,
         id_codigo_usuario,
         nm_estado_usuario,
         nm_cidade_usuario
