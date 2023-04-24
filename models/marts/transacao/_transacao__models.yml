@@ -2,46 +2,53 @@ version: 2
 
 models:
   - name: dim_cartoes
-    description: Dimensão de cartões
+    description: Dimensão de usuários
     columns:
+      - name: id_surrogate_key
+        description: Código único gerado pelas colunas id_codigo_transacao e id_codigo_usuario
+        tests:
+          - unique
+          - not_null
+
       - name: id_codigo_usuario
         description: Código único do usuário
 
       - name: nm_metodo_captura
         description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
+        tests:
+          - not_null
 
       - name: nm_bandeira_cartao
         description: Bandeira do cartão
+        tests:
+          - not_null
 
       - name: nm_metodo_pagamento
         description: Método de pagamento
+        tests:
+          - not_null
 
-      - name: n_utilizacoes_cartao
-        description: Quantidade de vezes que o cartão foi usado
-
-      - name: n_utilizacoes_credito
-        description: Quantidade de vezes que foi utilizado a função crédito
-
-      - name: n_total_aprovado
-        description: Valor total aprovado
-
-      - name: n_total_estornado
-        description: Valor total estornado
-
-      - name: n_total_devolvido
-        description: Valor total devolvido
-
-      - name: n_total_processando
-        description: Valor total proceesado
-
-      - name: n_total_pago
-        description: Valor total pago
+      - name: nm_estado_transacao
+        description: Estado da transação (paid, refused, refunded e chargedback)
+        tests:
+          - not_null
 
   - name: dim_usuarios
     description: Dimensão de usuários
     columns:
+      - name: id_surrogate_key
+        description: Código único gerado pelas colunas id_codigo_transacao e id_codigo_usuario
+        tests:
+          - unique
+          - not_null
+
       - name: id_codigo_usuario
         description: Código único do usuário
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_transacoes')
+              field: id_codigo_usuario
 
       - name: nm_estado_usuario
         description: Estado do usuário
@@ -52,3 +59,48 @@ models:
         description: Cidade do usuário
         tests:
           - not_null
+
+  - name: fct_transacoes
+    description: Tabela fato de transações
+    columns:
+      - name: id_codigo_usuario
+        description: Código único do usuário
+        tests:
+          - not_null
+
+      - name: nm_estado_usuario
+        description: Estado do usuário
+        tests:
+          - not_null
+
+      - name: nm_cidade_usuario
+        description: Cidade do usuário
+        tests:
+          - not_null
+
+      - name: nm_metodo_captura
+        description: Dispositivo de captura (POS, Tapton ou Link de pagamento)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["pos", "tap", "link"]
+
+      - name: nm_bandeira_cartao
+        description: Bandeira do cartão
+        tests:
+          - not_null
+
+      - name: nm_metodo_pagamento
+        description: Método de pagamento
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["debit_card", "credit_card"]
+
+      - name: nm_estado_transacao
+        description: Estado da transação (paid, refused, refunded e chargedback)
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                ["refused", "chargedback", "refunded", "processing", "paid"]

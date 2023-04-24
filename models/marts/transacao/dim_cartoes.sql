@@ -1,11 +1,20 @@
--- dim_cartoes.sql
+-- marts/transacao/dim_cartoes.sql
 
-WITH totalizacoes AS (
-    SELECT * FROM {{ ref('int_totalizacoes_usuario') }}
+WITH transacoes AS (
+    SELECT * FROM {{ ref('stg_stone__transacoes') }}
 ),
 
 cartoes AS (
-    SELECT * FROM totalizacoes
+    SELECT 
+        -- id
+        id_surrogate_key,
+        id_codigo_usuario,
+        -- string
+        nm_metodo_captura,
+        nm_bandeira_cartao,
+        nm_metodo_pagamento,
+        nm_estado_transacao
+    FROM transacoes
 )
 
 SELECT * FROM cartoes
