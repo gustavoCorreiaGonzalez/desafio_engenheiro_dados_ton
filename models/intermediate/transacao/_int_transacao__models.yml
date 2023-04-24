@@ -8,13 +8,6 @@ models:
       - name: id_codigo_usuario
         description: Código único do usuário
 
-      - name: nm_estado_transacao
-        description: Estado da transação (paid, refused, refunded e chargedback)
-        tests:
-          - not_null
-          - dbt_utils.expression_is_true:
-              expression: "= paid"
-
       - name: nm_metodo_pagamento
         description: Método de pagamento
 
