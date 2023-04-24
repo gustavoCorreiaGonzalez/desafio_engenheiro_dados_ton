@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: fct_churn
+    description: Ticket médio dos usuários por mês
+    columns:
+      - name: nm_event
+        description: Tipo do evento
+
+      - name: dt_mes
+        description: Mês do cálculo
+
+      - name: n_quantidade_usuarios
+        description: Quantide de usuários para o tipo do evento

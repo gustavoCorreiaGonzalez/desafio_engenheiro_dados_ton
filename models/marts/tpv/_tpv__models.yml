@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: fct_tpv_geral
+    description: Total de pagamentos processados por mês
+    columns:
+      - name: nm_tpv_geral
+        description: Valor do tpv total
+
+      - name: dt_mes
+        description: Mês do cálculo
+
+  - name: fct_tpv_metodo_pagamento
+    description: Total de pagamentos processados por mês
+    columns:
+      - name: nm_tpv_debito
+        description: Valor do tpv em débito
+
+      - name: nm_tpv_credito
+        description: Valor do tpv em crédito
+
+      - name: dt_mes
+        description: Mês do cálculo

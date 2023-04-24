@@ -33,6 +33,9 @@ models:
         tests:
           - not_null
 
+      - name: nm_valor_transacao
+        description: Valor da transação
+
   - name: dim_usuarios
     description: Dimensão de usuários
     columns:
@@ -104,3 +107,6 @@ models:
           - accepted_values:
               values:
                 ["refused", "chargedback", "refunded", "processing", "paid"]
+
+      - name: nm_valor_transacao
+        description: Valor da transação

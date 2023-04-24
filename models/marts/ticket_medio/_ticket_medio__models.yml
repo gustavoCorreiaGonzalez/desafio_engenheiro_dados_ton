@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: fct_ticket_medio
+    description: Ticket médio dos usuários por mês
+    columns:
+      - name: nm_ticket_medio
+        description: Valor do ticket médio
+
+      - name: dt_mes
+        description: Mês do cálculo
