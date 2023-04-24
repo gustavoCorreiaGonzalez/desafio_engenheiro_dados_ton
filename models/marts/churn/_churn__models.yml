@@ -6,6 +6,8 @@ models:
     columns:
       - name: nm_event
         description: Tipo do evento
+        tests:
+          - not_null
 
       - name: dt_mes
         description: Mês do cálculo
