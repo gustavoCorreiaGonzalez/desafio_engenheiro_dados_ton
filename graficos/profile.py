@@ -32,7 +32,9 @@ def create_connection() -> redshift_connector.Cursor:
     return conn.cursor()
 
 
-def get_data(cursor: redshift_connector.Cursor) -> pd.DataFrame:
+def get_data(
+    cursor: redshift_connector.Cursor, table: str, limit: str = "10000"
+) -> pd.DataFrame:
     """Faz a selecão dos dados que serão utilizados para criar o profile
 
     Args:
@@ -43,16 +45,16 @@ def get_data(cursor: redshift_connector.Cursor) -> pd.DataFrame:
     """
     logging.info("Iniciando a busca dos dados")
 
-    cursor.execute(
-        """SELECT * FROM "dev"."public"."raw_transacoes_usuarios" LIMIT 10000;"""
-    )
+    data_base = os.getenv("REDSHIFT_DATABASE")
+
+    cursor.execute(f"""SELECT * FROM "{data_base}"."public"."{table}" LIMIT {limit};""")
 
     logging.info("Dados selecionados com sucesso!")
 
     return cursor.fetch_dataframe()
 
 
-def create_profile(df: pd.DataFrame) -> None:
+def create_profile(df: pd.DataFrame, table: dict[str, str]) -> None:
     """Cria o profile dos dados
 
     Args:
@@ -60,11 +62,16 @@ def create_profile(df: pd.DataFrame) -> None:
     """
     logging.info("Iniciando a criação do profile")
 
-    profile = ProfileReport(df, title="Pandas Profiling Report", minimal=True)
+    profile = ProfileReport(
+        df,
+        title="Pandas Profiling Report",
+        tsmode=True,
+        sortby=table["date_column"],
+    )
 
     logging.info("Profile com sucesso!")
 
-    profile.to_file("your_report.html")
+    profile.to_file(f"report_for_{table['table_name']}_table.html")
 
     logging.info("Relatório criado com sucesso!")
 
@@ -86,18 +93,38 @@ def formating_data(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def formating_date(df: pd.DataFrame) -> pd.DataFrame:
+    df["dt_mes"] = pd.to_datetime(df["dt_mes"])
+    return df
+
+
 def main():
     """Função main com as chamadas de função necessárias para criar o profile dos dados"""
+    tables = [
+        {
+            "table_name": "raw_transacoes_usuarios",
+            "date_column": "data_e_hora_da_transacao",
+        },
+        {"table_name": "fct_churn", "date_column": "dt_mes"},
+        {"table_name": "fct_ticket_medio", "date_column": "dt_mes"},
+        {"table_name": "fct_tpv_geral", "date_column": "dt_mes"},
+        {"table_name": "fct_tpv_metodo_pagamento", "date_column": "dt_mes"},
+    ]
+
     redshift_connection = create_connection()
 
-    data = get_data(redshift_connection)
+    for table in tables:
+        data = get_data(redshift_connection, table["table_name"])
 
-    # Aqui foi necessário realizar essa formatação porque o pandas profile estava entendo os
-    # campos data e numéricos como string e estava criando o perfil dos dados como se essas
-    # colunas fossem categóricas
-    data_formatted = formating_data(data)
+        # Aqui foi necessário realizar essa formatação porque o pandas profile estava entendo os
+        # campos data e numéricos como string e estava criando o perfil dos dados como se essas
+        # colunas fossem categóricas
+        if table["table_name"] == "raw_transacoes_usuarios":
+            data = formating_data(data)
+        else:
+            data = formating_date(data)
 
-    create_profile(data_formatted)
+        create_profile(data, table)
 
 
 if __name__ == "__main__":
