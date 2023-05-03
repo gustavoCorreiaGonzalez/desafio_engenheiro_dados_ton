@@ -6,27 +6,14 @@ WITH transacoes AS (
 
 tpv_geral AS (
     SELECT
-        ROUND(
-            SUM(
-                CASE
-                    WHEN nm_metodo_pagamento = 'debit_card' THEN nm_valor_transacao
-                END
-            ),
-            1
-        ) AS n_tpv_debito,
-        ROUND(
-            SUM(
-                CASE
-                    WHEN nm_metodo_pagamento = 'credit_card' THEN nm_valor_transacao
-                END
-            ),
-            1
-        ) AS n_tpv_credito,
+        nm_metodo_pagamento,
+        ROUND(SUM(nm_valor_transacao), 1) AS n_valor_tpv,
         CAST(DATE_TRUNC('month', dt_transacao) AS DATE) AS dt_mes
     FROM
         transacoes
     GROUP BY
-        dt_mes
+        dt_mes,
+        nm_metodo_pagamento
     ORDER BY
         dt_mes ASC
 )
